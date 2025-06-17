@@ -1,0 +1,25 @@
+name: shopify-ax-integration
+services:
+- name: api
+  source_dir: /
+  github:
+    repo: mohamedselimrefaat/hedeya-ax-app
+    branch: main
+  run_command: go run main.go
+  environment_slug: go
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 8080
+  health_check:
+    http_path: /health
+  envs:
+  - key: PORT
+    value: "8080"
+  - key: LOG_DIR
+    value: "/tmp/logs"
+  - key: ERP_ENDPOINT
+    value: "http://demo4205675.mockable.io/hedeya-ax"
+  - key: SOAP_ACTION
+    value: "http://tempuri.org/CreateOrder"
+  routes:
+  - path: /

@@ -18,7 +18,7 @@ services:
   - key: LOG_DIR
     value: "/tmp/logs"
   - key: ERP_ENDPOINT
-    value: "http://demo4205675.mockable.io/hedeya-ax"
+    value: "https://hammerhead-app-pw6nh.ondigitalocean.app/webhook"
   - key: SOAP_ACTION
     value: "http://tempuri.org/CreateOrder"
   routes:

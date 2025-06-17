@@ -49,10 +49,17 @@ func NewLogger() *Logger {
 		logDir = DefaultLogDir
 	}
 	
-	// Create log directory if it doesn't exist
+	// Create log directory if it doesn't exist (but files will be ephemeral on App Platform)
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		log.Printf("Warning: Could not create log directory %s: %v", logDir, err)
 		logDir = "." // Fall back to current directory
+	}
+	
+	// Log the logging strategy
+	if os.Getenv("DIGITAL_OCEAN_APP") != "" {
+		log.Printf("Running on DigitalOcean App Platform - logs will appear in Runtime Logs")
+	} else {
+		log.Printf("Running locally - logs saved to %s/", logDir)
 	}
 	
 	return &Logger{
@@ -84,7 +91,10 @@ func (l *Logger) writeLogEntry(entry LogEntry) {
 		return
 	}
 	
-	// Open file in append mode
+	// ALSO OUTPUT TO CONSOLE for DigitalOcean Runtime Logs
+	log.Printf("LOG_ENTRY[%s]: %s", entry.Type, string(jsonData))
+	
+	// Write to file (will be ephemeral on App Platform)
 	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		log.Printf("Error opening log file %s: %v", filepath, err)
